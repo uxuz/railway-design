@@ -1,6 +1,6 @@
 # Railway Design
 
-A Next.js website showcasing design system and guidelines.
+Railway design sandbox - A Next.js website showcasing design system and guidelines.
 
 ## Getting Started
 
@@ -34,4 +34,3 @@ The app will be available at a Railway-provided URL.
 npm run build
 npm start
 ```
-
