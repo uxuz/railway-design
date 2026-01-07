@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import PrincipleCard from "./PrincipleCard";
 
 // Card data array - can be expanded to 30+ cards
@@ -6,7 +9,7 @@ const cardsData = [
     category: "1. CLEAR",
     categoryNumber: 1,
     totalCards: 4,
-    themeColor: "#F46036",
+    themeColor: "#E07A4F",
     categoryTitle: "Place",
     principleStatement: "Follow user workflow, not system structure",
     questions: [
@@ -40,7 +43,7 @@ const cardsData = [
     category: "1. CLEAR",
     categoryNumber: 2,
     totalCards: 4,
-    themeColor: "#F46036",
+    themeColor: "#E07A4F",
     categoryTitle: "Clarity",
     principleStatement: "Turn system complexity into user confidence",
     questions: [
@@ -74,7 +77,7 @@ const cardsData = [
     category: "1. CLEAR",
     categoryNumber: 3,
     totalCards: 4,
-    themeColor: "#F46036",
+    themeColor: "#E07A4F",
     categoryTitle: "Purposeful Composition",
     principleStatement: "Arrange elements with clear intent and visual harmony",
     questions: [
@@ -108,7 +111,7 @@ const cardsData = [
     category: "1. CLEAR",
     categoryNumber: 4,
     totalCards: 4,
-    themeColor: "#F46036",
+    themeColor: "#E07A4F",
     categoryTitle: "Minimalism",
     principleStatement: "Remove everything non-essential to reveal clarity",
     questions: [
@@ -146,7 +149,7 @@ const preciseCardsData = [
     category: "2. PRECISE",
     categoryNumber: 1,
     totalCards: 3,
-    themeColor: "#EBA810",
+    themeColor: "#D9B85C",
     categoryTitle: "Accurate Representation",
     principleStatement:
       "Interface should accurately represent capabilities, state, and behavior.",
@@ -181,7 +184,7 @@ const preciseCardsData = [
     category: "2. PRECISE",
     categoryNumber: 2,
     totalCards: 3,
-    themeColor: "#EBA810",
+    themeColor: "#D9B85C",
     categoryTitle: "Spatial Continuity",
     principleStatement:
       "Maintain visual connection between interface states to preserve user context",
@@ -214,7 +217,7 @@ const preciseCardsData = [
     category: "2. PRECISE",
     categoryNumber: 3,
     totalCards: 3,
-    themeColor: "#EBA810",
+    themeColor: "#D9B85C",
     categoryTitle: "Physical authenticity",
     principleStatement:
       "Interface elements that reference the physical world should behave realistically",
@@ -250,7 +253,7 @@ const efficientCardsData = [
     category: "3. EFFICIENT",
     categoryNumber: 3,
     totalCards: 3,
-    themeColor: "#3BCEAC",
+    themeColor: "#5BC4B0",
     categoryTitle: "Progressive disclosure",
     principleStatement: "Show only what's needed, when it's needed",
     questions: [
@@ -284,7 +287,7 @@ const efficientCardsData = [
     category: "3. EFFICIENT",
     categoryNumber: 1,
     totalCards: 3,
-    themeColor: "#3BCEAC",
+    themeColor: "#5BC4B0",
     categoryTitle: "Effort Reduction",
     principleStatement: "Infer what you can, ask only what you must",
     questions: [
@@ -317,7 +320,7 @@ const efficientCardsData = [
     category: "3. EFFICIENT",
     categoryNumber: 2,
     totalCards: 3,
-    themeColor: "#3BCEAC",
+    themeColor: "#5BC4B0",
     categoryTitle: "Step Minimization",
     principleStatement: "More steps mean fewer completions",
     questions: [
@@ -354,7 +357,7 @@ const durableCardsData = [
     category: "4. DURABLE",
     categoryNumber: 3,
     totalCards: 3,
-    themeColor: "#368DD9",
+    themeColor: "#5A9BC9",
     categoryTitle: "Reversible Actions",
     principleStatement: "Make mistakes fixable rather than preventable",
     questions: [
@@ -377,7 +380,7 @@ const durableCardsData = [
     category: "4. DURABLE",
     categoryNumber: 1,
     totalCards: 3,
-    themeColor: "#368DD9",
+    themeColor: "#5A9BC9",
     categoryTitle: "Error Recovery",
     principleStatement: "Turn error states into recovery opportunities",
     questions: [
@@ -410,7 +413,7 @@ const durableCardsData = [
     category: "4. DURABLE",
     categoryNumber: 2,
     totalCards: 3,
-    themeColor: "#368DD9",
+    themeColor: "#5A9BC9",
     categoryTitle: "Resilience",
     principleStatement: "Make experimentation safe and consequence-free",
     questions: [
@@ -442,7 +445,7 @@ const delightfulCardsData = [
     category: "5. DELIGHTFUL",
     categoryNumber: 1,
     totalCards: 3,
-    themeColor: "#391DC9",
+    themeColor: "#6B4DB8",
     categoryTitle: "Ingenuity",
     principleStatement:
       "I haven't seen this before, but it makes perfect sense.",
@@ -478,7 +481,7 @@ const delightfulCardsData = [
     category: "5. DELIGHTFUL",
     categoryNumber: 2,
     totalCards: 3,
-    themeColor: "#391DC9",
+    themeColor: "#6B4DB8",
     categoryTitle: "Iconic",
     principleStatement: "Work that stands out instantly and lasts over time.",
     questions: [
@@ -513,7 +516,7 @@ const delightfulCardsData = [
     category: "5. DELIGHTFUL",
     categoryNumber: 3,
     totalCards: 3,
-    themeColor: "#391DC9",
+    themeColor: "#6B4DB8",
     categoryTitle: "Emotional Resonance",
     principleStatement: "Design for joy, not just utility",
     questions: [
@@ -547,6 +550,20 @@ const delightfulCardsData = [
 ];
 
 export default function PrinciplesPage() {
+  const [view, setView] = useState<"grid" | "line">("grid");
+  const [targetView, setTargetView] = useState<"grid" | "line">("grid");
+  const lineContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleViewChange = (newView: "grid" | "line") => {
+    if (newView === view) return;
+
+    setTargetView(newView);
+    // Start animation immediately
+    setTimeout(() => {
+      setView(newView);
+    }, 125); // Match animation duration
+  };
+
   // Combine all cards into a single array
   const allCards = [
     ...cardsData,
@@ -556,18 +573,235 @@ export default function PrinciplesPage() {
     ...delightfulCardsData,
   ];
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-full mx-auto px-4">
-        <h1 className="text-4xl font-medium text-gray-900 mb-16 tracking-tight">
-          Design Principles
-        </h1>
+  // Keyboard navigation and vertical-to-horizontal scroll for line view
+  useEffect(() => {
+    if (view !== "line") return;
 
-        <div className="principles-grid">
-          {allCards.map((card, index) => (
-            <PrincipleCard key={index} {...card} />
-          ))}
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!lineContainerRef.current) return;
+
+      const container = lineContainerRef.current;
+      const scrollAmount = 528 + 16; // card width + gap
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      }
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!lineContainerRef.current) return;
+
+      // Convert vertical scroll to horizontal
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        lineContainerRef.current.scrollBy({
+          left: e.deltaY,
+          behavior: "auto",
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    const container = lineContainerRef.current;
+    if (container) {
+      container.addEventListener("wheel", handleWheel, { passive: false });
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      if (container) {
+        container.removeEventListener("wheel", handleWheel);
+      }
+    };
+  }, [view]);
+
+  // Prevent double scrollbars during transition
+  useEffect(() => {
+    if (view !== targetView) {
+      // During transition, hide all overflow
+      document.body.style.overflow = "hidden";
+    } else {
+      // After transition, set appropriate overflow
+      document.body.style.overflow = view === "line" ? "hidden" : "auto";
+      document.body.style.overflowY = view === "line" ? "hidden" : "auto";
+      document.body.style.overflowX = "hidden"; // Always hide horizontal scrollbar on body
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+      document.body.style.overflowY = "auto";
+      document.body.style.overflowX = "auto";
+    };
+  }, [view, targetView]);
+
+  return (
+    <div
+      className="min-h-screen py-12 px-4"
+      style={{ backgroundColor: "#E7E5E3" }}
+    >
+      <div
+        className="max-w-full mx-auto px-4"
+        style={{ position: "relative", overflow: "visible", zIndex: 20 }}
+      >
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 48 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M45.8145 33.9521C42.0252 42.2343 33.6829 48 23.9746 48C7.77693 47.7555 2.14169 34.0288 2.11035 33.9521H45.8145ZM23.9746 0C37.2436 0.000109469 48.0002 10.7508 48 24.0098C47.9977 26.5692 47.5844 29.1123 46.7764 31.541H1.27832C0.982736 30.6187 0.784825 29.7825 0.782227 29.7715H34.1133C36.2427 29.7715 38.002 28.682 38.8193 26.8555C39.7073 24.8679 39.3314 22.7929 38.0254 20.9883C36.6127 19.0372 34.2429 16.2984 32.6016 15.0576C29.5778 12.7699 25.7349 12.4343 22.6084 12.3301L21.7109 12.2969C20.2613 12.2364 19.9852 12.2031 12.5645 12.2031V12.2061H12.5635C12.5635 12.2061 6.2852 12.2091 3.06152 12.2158C7.18662 4.92919 14.9981 0 23.9746 0ZM36.7471 25.3916C36.4723 26.4557 35.6258 27.3134 34.1143 27.3135H0.205078C0.117655 26.6816 0.0569871 26.0407 0.0185547 25.3916H36.7471ZM12.5576 14.6123C18.9227 14.6123 20.0074 14.6393 21.6064 14.7051C26.4026 14.9096 29.7555 14.2113 35.9883 22.2637C36.1607 22.483 36.3317 22.7075 36.459 22.9561H0C0.0341962 22.1473 0.108319 21.3404 0.222656 20.5391H19.3877V18.1064H0.704102C0.923341 17.1128 1.37398 15.891 1.84082 14.6309C5.44734 14.6213 9.15093 14.6123 12.5576 14.6123Z"
+                fill="#1C1A28"
+              />
+            </svg>
+            <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
+              Software Design Principles
+            </h1>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex bg-black/10 p-1 rounded-lg">
+            <button
+              onClick={() => handleViewChange("grid")}
+              className={`px-3 py-1 rounded text-xs font-medium transition-all duration-200 ease-in-out ${
+                view === "grid"
+                  ? "bg-white text-black/45"
+                  : "bg-transparent text-black/45"
+              }`}
+            >
+              Grid
+            </button>
+            <button
+              onClick={() => handleViewChange("line")}
+              className={`px-3 py-1 rounded text-xs font-medium transition-all duration-200 ease-in-out ${
+                view === "line"
+                  ? "bg-white text-black/45"
+                  : "bg-transparent text-black/45"
+              }`}
+            >
+              Line
+            </button>
+          </div>
         </div>
+
+        {/* Divider */}
+        <div
+          className="mb-8"
+          style={{
+            width: "100%",
+            height: "1px",
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+          }}
+        />
+
+        {/* Info Section - Always visible */}
+        <div
+          className="mb-16"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "16px",
+            justifyItems: "start",
+            position: "relative",
+            zIndex: 30,
+            transform: "none",
+            opacity: 1,
+            visibility: "visible",
+            pointerEvents: "auto",
+            isolation: "isolate",
+          }}
+        >
+          <div style={{ maxWidth: "528px" }}>
+            <h2 className="font-semibold mb-1 text-sm text-gray-900">
+              What's this?
+            </h2>
+            <p className="text-sm text-gray-900 leading-normal">
+              This is a compilation of the aspects we evaluate when shipping a
+              solution. think about them as the cliff notes of the
+              considerations we should have when making software.
+            </p>
+          </div>
+          <div style={{ maxWidth: "528px" }}>
+            <h2 className="font-semibold mb-1 text-sm text-gray-900">
+              How to use it?
+            </h2>
+            <p className="text-sm text-gray-900 leading-normal">
+              Whenever your solution is functional, evaluate how it
+              progressively fits the prompts. Ideally, it should move upwards
+              across iterations, not from the first launch.
+            </p>
+          </div>
+        </div>
+
+        {/* Grid View */}
+        {(view === "grid" || targetView === "grid") && (
+          <div
+            className="principles-grid"
+            style={{
+              transform:
+                targetView === "line" ||
+                (view === "line" && targetView === "grid")
+                  ? "translateY(128px)"
+                  : "translateY(0)",
+              opacity:
+                targetView === "line" ||
+                (view === "line" && targetView === "grid")
+                  ? 0
+                  : 1,
+              transition: "transform 125ms ease-out, opacity 125ms ease-out",
+            }}
+          >
+            {allCards.map((card, index) => (
+              <PrincipleCard key={index} {...card} />
+            ))}
+          </div>
+        )}
+
+        {/* Line View */}
+        {(view === "line" || targetView === "line") && (
+          <div
+            ref={lineContainerRef}
+            className="principles-line"
+            style={{
+              position: "fixed",
+              top: "140px", // Start below header
+              left: 0,
+              right: 0,
+              width: "100vw",
+              paddingLeft: "2rem",
+              paddingRight: "2rem",
+              paddingBottom: "1rem",
+              backgroundColor: "#E7E5E3",
+              height: "calc(100vh - 140px)", // Account for header
+              alignItems: "flex-start", // Override center alignment
+              paddingTop: "calc(50vh - 400px)", // Center cards: adjust this value to fine-tune vertical position
+              overflowX:
+                view === "line" && targetView === "line" ? "auto" : "hidden",
+              overflowY: "hidden",
+              opacity: view === "line" && targetView === "line" ? 1 : 0,
+              transition: "opacity 125ms ease-out",
+              zIndex: 10,
+            }}
+          >
+            {allCards.map((card, index) => (
+              <div
+                key={index}
+                style={{
+                  flexShrink: 0,
+                  width: "528px",
+                }}
+              >
+                <PrincipleCard {...card} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
