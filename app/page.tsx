@@ -1,4 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import CardsAgainstBadQuality from "./components/project-images/CardsAgainstBadQuality";
+import HowToBuildAPage from "./components/project-images/HowToBuildAPage";
+import SharedDefinitionOfQuality from "./components/project-images/SharedDefinitionOfQuality";
+import Branding from "./components/project-images/Branding";
 
 // Project data
 const projects = [
@@ -6,25 +12,29 @@ const projects = [
     title: "Cards against bad quality",
     description: "Something something about our principles",
     href: "/principles",
-    image: null, // placeholder
+    image: <CardsAgainstBadQuality />,
+    disabled: false,
   },
   {
     title: "How to build a page",
     description: "Something something about our principles",
-    href: "#",
-    image: null,
+    href: "/how-to-build-a-page",
+    image: <HowToBuildAPage />,
+    disabled: false,
   },
   {
     title: "Shared definition of quality",
     description: "Something something about our principles",
     href: "#",
-    image: null,
+    image: <SharedDefinitionOfQuality />,
+    disabled: true,
   },
   {
     title: "Branding",
     description: "Something something about our principles",
     href: "#",
-    image: null,
+    image: <Branding />,
+    disabled: true,
   },
 ];
 
@@ -87,28 +97,49 @@ export default function Home() {
           {/* Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
-              <Link key={index} href={project.href} className="group block">
+              <Link
+                key={index}
+                href={project.href}
+                className={`group block ${
+                  project.disabled ? "cursor-not-allowed" : ""
+                }`}
+                style={project.disabled ? { opacity: 0.5 } : {}}
+                onClick={
+                  project.disabled ? (e) => e.preventDefault() : undefined
+                }
+              >
                 {/* Title and Description */}
-                <h2 className="text-base font-semibold text-gray-900 mb-1 group-hover:opacity-70 transition-opacity">
+                <h2
+                  className={`text-base font-semibold text-gray-900 mb-1 transition-opacity ${
+                    project.disabled
+                      ? "group-hover:opacity-70"
+                      : "group-hover:underline"
+                  }`}
+                >
                   {project.title}
                 </h2>
                 <p className="text-sm text-gray-500 mb-4">
                   {project.description}
                 </p>
 
-                {/* Image Placeholder */}
+                {/* Image/SVG */}
                 <div
-                  className="w-full aspect-[4/3] rounded-lg group-hover:opacity-90 transition-opacity"
+                  className="w-full rounded-lg group-hover:opacity-90 transition-opacity overflow-hidden"
                   style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.08)",
+                    backgroundColor: project.disabled
+                      ? "rgba(0, 0, 0, 0.04)"
+                      : "rgba(0, 0, 0, 0.08)",
+                    border: project.disabled
+                      ? "2px dashed rgba(0, 0, 0, 0.08)"
+                      : "none",
+                    maxHeight: "240px",
+                    height: "240px",
                   }}
                 >
-                  {project.image && (
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
+                  {project.image ? (
+                    <div className="w-full h-full">{project.image}</div>
+                  ) : (
+                    <div className="w-full h-full bg-transparent" />
                   )}
                 </div>
               </Link>
