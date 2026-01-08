@@ -765,9 +765,9 @@ export default function PrinciplesPage() {
       // Only snap if it was actually a drag, not just a click
       if (wasDragging) {
         // Calculate how many cards to move based on total drag distance
-        // On mobile: 80vw + 16px, on desktop: 544px (528px + 16px)
-        // Card width is always 544px (528 + 16 gap), but visually scaled on mobile
-        const cardWidth = isStacked ? 544 * mobileScale : 544;
+        // On mobile: 80vw + 16px, on desktop: 518px (528 + 16 gap - 26 negative margins)
+        // Card effective width is 518px accounting for -13px margin on each side
+        const cardWidth = isStacked ? 518 * mobileScale : 518;
         const cardsMoved = Math.round(totalDrag / cardWidth);
         const startIndex = startIndexRef.current;
         let newIndex = startIndex - cardsMoved;
@@ -1064,7 +1064,7 @@ export default function PrinciplesPage() {
 
         {/* Info Section - Always visible */}
         <div
-          className={isStacked ? "mb-4" : "mb-16"}
+          className="mb-16"
           style={{
             display: "grid",
             gridTemplateColumns: isStacked ? "1fr" : "repeat(2, 1fr)",
@@ -1138,17 +1138,14 @@ export default function PrinciplesPage() {
                   ? `repeat(${gridColumns}, ${Math.round(528 * gridScale)}px)`
                   : "none",
               gap: "16px",
-              alignItems: targetView === "line" ? "center" : "start",
+              alignItems: "flex-start",
               justifyContent: "center",
               paddingTop: "0",
               overflowX: targetView === "line" ? "hidden" : "visible",
               overflowY: "visible",
               position: "relative",
-              minHeight:
-                targetView === "line"
-                  ? `${740 * (isStacked ? mobileScale : 1) * 1.08}px`
-                  : "auto",
-              height: "auto",
+              height: targetView === "line" ? "700px" : "auto",
+              minHeight: "auto",
               opacity: 1,
               transform:
                 view === "line" && targetView === "line"
@@ -1213,18 +1210,21 @@ export default function PrinciplesPage() {
                   alignItems: "center",
                   gap: "16px",
                   position: "absolute",
+                  top: "50%",
                   left: "50vw",
                   marginLeft: isStacked ? "0" : "-48px", // Compensate for container offsets
-                  transform: `translateX(calc(${
+                  transform: `translateY(-50%) translateX(calc(${
                     // Center the active card at viewport center
                     // Card width is always 528px, gap is 16px
                     // On mobile, we need to account for the scale in the translation
-                    // Active card center = (index + 3) * (cardWidth + gap) + margin + halfScaledWidth
+                    // Active card center = (index + 3) * (cardWidth + gap - negativeMargins) + halfCardWidth
+                    // Each inactive card has -13px margin on each side = -26px total
+                    // So effective spacing per card = 544 - 26 = 518px
                     isStacked
                       ? `-${
-                          ((activeCardIndex + 3) * 544 + 21 + 272) * mobileScale
+                          ((activeCardIndex + 3) * 518 + 264) * mobileScale
                         }px`
-                      : `-${(activeCardIndex + 3) * 544 + 21 + 285}px`
+                      : `-${(activeCardIndex + 3) * 518 + 264}px`
                   } + ${dragOffset}px)) ${
                     isStacked ? `scale(${mobileScale})` : ""
                   }`,
@@ -1257,9 +1257,10 @@ export default function PrinciplesPage() {
                       : isPrev || isNext
                       ? 0.5
                       : 0.25;
-                    const scale = isActive ? (isStacked ? 1.03 : 1.08) : 1;
-                    const marginLeft = isActive ? "21px" : "0px";
-                    const marginRight = isActive ? "21px" : "0px";
+                    // Scale inactive cards to 95%, compensate with negative margins
+                    const scale = isActive ? 1 : 0.95;
+                    // 5% of 528 = 26.4px total, 13.2px each side
+                    const margin = isActive ? "0px" : "-13px";
 
                     return (
                       <motion.div
@@ -1268,8 +1269,8 @@ export default function PrinciplesPage() {
                           flexShrink: 0,
                           width: "528px",
                           maxWidth: "528px",
-                          marginLeft,
-                          marginRight,
+                          marginLeft: margin,
+                          marginRight: margin,
                           transformOrigin: "center center",
                         }}
                         animate={{
@@ -1282,8 +1283,6 @@ export default function PrinciplesPage() {
                             : {
                                 opacity: { duration: 0.3, ease: "easeOut" },
                                 scale: { duration: 0.3, ease: "easeOut" },
-                                marginLeft: { duration: 0.3, ease: "easeOut" },
-                                marginRight: { duration: 0.3, ease: "easeOut" },
                               }
                         }
                       >
@@ -1311,7 +1310,9 @@ export default function PrinciplesPage() {
                       ? index === 0
                       : index === realActiveIndex + 1;
                   const opacity = isActive ? 1 : isPrev || isNext ? 0.5 : 0.25;
-                  const scale = isActive ? (isStacked ? 1.03 : 1.08) : 1;
+                  const scale = isActive ? 1 : 0.95;
+                  // 5% of 528 = 26.4px total, 13.2px each side
+                  const margin = isActive ? "0px" : "-13px";
 
                   return (
                     <motion.div
@@ -1343,12 +1344,9 @@ export default function PrinciplesPage() {
                         flexShrink: 0,
                         width: "528px",
                         maxWidth: "528px",
+                        marginLeft: margin,
+                        marginRight: margin,
                         cursor: isDragging ? "grabbing" : "grab",
-                        marginLeft: isActive ? "21px" : "0px",
-                        marginRight: isActive ? "21px" : "0px",
-                        marginTop: 0,
-                        marginBottom: 0,
-                        padding: 0,
                         transformOrigin: "center center",
                       }}
                       transition={
@@ -1357,8 +1355,6 @@ export default function PrinciplesPage() {
                           : {
                               opacity: { duration: 0.3, ease: "easeOut" },
                               scale: { duration: 0.3, ease: "easeOut" },
-                              marginLeft: { duration: 0.3, ease: "easeOut" },
-                              marginRight: { duration: 0.3, ease: "easeOut" },
                             }
                       }
                     >
@@ -1380,9 +1376,9 @@ export default function PrinciplesPage() {
                       : isPrev || isNext
                       ? 0.5
                       : 0.25;
-                    const scale = isActive ? (isStacked ? 1.03 : 1.08) : 1;
-                    const marginLeft = isActive ? "21px" : "0px";
-                    const marginRight = isActive ? "21px" : "0px";
+                    const scale = isActive ? 1 : 0.95;
+                    // 5% of 528 = 26.4px total, 13.2px each side
+                    const margin = isActive ? "0px" : "-13px";
 
                     return (
                       <motion.div
@@ -1391,8 +1387,8 @@ export default function PrinciplesPage() {
                           flexShrink: 0,
                           width: "528px",
                           maxWidth: "528px",
-                          marginLeft,
-                          marginRight,
+                          marginLeft: margin,
+                          marginRight: margin,
                           transformOrigin: "center center",
                         }}
                         animate={{
@@ -1405,8 +1401,6 @@ export default function PrinciplesPage() {
                             : {
                                 opacity: { duration: 0.3, ease: "easeOut" },
                                 scale: { duration: 0.3, ease: "easeOut" },
-                                marginLeft: { duration: 0.3, ease: "easeOut" },
-                                marginRight: { duration: 0.3, ease: "easeOut" },
                               }
                         }
                       >
