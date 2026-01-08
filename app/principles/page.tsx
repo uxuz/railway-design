@@ -555,6 +555,9 @@ export default function PrinciplesPage() {
   const [view, setView] = useState<"grid" | "line">("line");
   const [targetView, setTargetView] = useState<"grid" | "line">("line");
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false); // For hiding keystrokes (< 480px)
+  const [isStacked, setIsStacked] = useState(false); // For stacking layout (< 640px)
+  const [mobileScale, setMobileScale] = useState(1); // Proportional scale for mobile cards
   const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(
     null
   );
@@ -625,24 +628,26 @@ export default function PrinciplesPage() {
       if (e.key === "ArrowLeft") {
         e.preventDefault();
         setPressedButton("left");
-        const isWrappingForward = currentIndex === 0;
-        const newIndex = isWrappingForward
-          ? allCards.length - 1
-          : currentIndex - 1;
+        const isWrappingBack = currentIndex === 0;
 
-        if (isWrappingForward) {
-          // Instant wrap: going from first to last
-          setIsWrapping(true); // Disable transitions for instant swap
-          activeCardIndexRef.current = newIndex;
-          setActiveCardIndex(newIndex); // Instantly swap to last card
-          // Re-enable transitions after instant swap
-          requestAnimationFrame(() => {
-            setIsWrapping(false);
-          });
+        if (isWrappingBack) {
+          // Seamless wrap: animate to duplicate at -1, then snap to real last card
+          setSlideDirection("right");
+          activeCardIndexRef.current = -1;
+          setActiveCardIndex(-1); // Animate to duplicate last card
+          // After animation, snap to real last card position
+          setTimeout(() => {
+            setIsWrapping(true); // Disable transition for snap
+            activeCardIndexRef.current = allCards.length - 1;
+            setActiveCardIndex(allCards.length - 1);
+            requestAnimationFrame(() => {
+              setIsWrapping(false);
+            });
+          }, 150); // Match transition duration
         } else {
           setSlideDirection("right");
-          activeCardIndexRef.current = newIndex;
-          setActiveCardIndex(newIndex);
+          activeCardIndexRef.current = currentIndex - 1;
+          setActiveCardIndex(currentIndex - 1);
         }
 
         setTimeout(() => {
@@ -652,22 +657,26 @@ export default function PrinciplesPage() {
       } else if (e.key === "ArrowRight") {
         e.preventDefault();
         setPressedButton("right");
-        const isWrappingBackward = currentIndex === allCards.length - 1;
-        const newIndex = isWrappingBackward ? 0 : currentIndex + 1;
+        const isWrappingForward = currentIndex === allCards.length - 1;
 
-        if (isWrappingBackward) {
-          // Instant wrap: going from last to first
-          setIsWrapping(true); // Disable transitions for instant swap
-          activeCardIndexRef.current = newIndex;
-          setActiveCardIndex(newIndex); // Instantly swap to first card
-          // Re-enable transitions after instant swap
-          requestAnimationFrame(() => {
-            setIsWrapping(false);
-          });
+        if (isWrappingForward) {
+          // Seamless wrap: animate to duplicate at allCards.length, then snap to real first card
+          setSlideDirection("left");
+          activeCardIndexRef.current = allCards.length;
+          setActiveCardIndex(allCards.length); // Animate to duplicate first card
+          // After animation, snap to real first card position
+          setTimeout(() => {
+            setIsWrapping(true); // Disable transition for snap
+            activeCardIndexRef.current = 0;
+            setActiveCardIndex(0);
+            requestAnimationFrame(() => {
+              setIsWrapping(false);
+            });
+          }, 150); // Match transition duration
         } else {
           setSlideDirection("left");
-          activeCardIndexRef.current = newIndex;
-          setActiveCardIndex(newIndex);
+          activeCardIndexRef.current = currentIndex + 1;
+          setActiveCardIndex(currentIndex + 1);
         }
 
         setTimeout(() => {
@@ -748,7 +757,9 @@ export default function PrinciplesPage() {
       // Only snap if it was actually a drag, not just a click
       if (wasDragging) {
         // Calculate how many cards to move based on total drag distance
-        const cardWidth = 544; // 528px card + 16px gap
+        // On mobile: 80vw + 16px, on desktop: 544px (528px + 16px)
+        // Card width is always 544px (528 + 16 gap), but visually scaled on mobile
+        const cardWidth = isStacked ? 544 * mobileScale : 544;
         const cardsMoved = Math.round(totalDrag / cardWidth);
         const startIndex = startIndexRef.current;
         let newIndex = startIndex - cardsMoved;
@@ -804,6 +815,27 @@ export default function PrinciplesPage() {
     };
   }, [view, allCards.length]);
 
+  // Detect mobile (< 480px for keystrokes) and stacked layout (< 640px)
+  useEffect(() => {
+    const checkBreakpoints = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsMobile(width < 480);
+      setIsStacked(width < 640);
+      // Calculate proportional scale for mobile: based on width only
+      if (width < 640) {
+        const availableWidth = width - 48; // Account for outer container padding
+        const targetCardWidth = availableWidth * 0.85; // Leave room for adjacent cards peek
+        setMobileScale(Math.min(1, targetCardWidth / 528));
+      } else {
+        setMobileScale(1);
+      }
+    };
+    checkBreakpoints();
+    window.addEventListener("resize", checkBreakpoints);
+    return () => window.removeEventListener("resize", checkBreakpoints);
+  }, []);
+
   // Prevent double scrollbars during transition
   useEffect(() => {
     if (view !== targetView) {
@@ -851,8 +883,15 @@ export default function PrinciplesPage() {
         }}
       >
         <div
-          className="flex items-center justify-between mb-8"
-          style={{ position: "relative", zIndex: 40 }}
+          className="flex mb-8"
+          style={{
+            position: "relative",
+            zIndex: 40,
+            flexDirection: isStacked ? "column" : "row",
+            alignItems: isStacked ? "stretch" : "center",
+            justifyContent: isStacked ? "flex-start" : "space-between",
+            gap: isStacked ? "32px" : "16px",
+          }}
         >
           <div className="flex items-center gap-3">
             <Link href="/" className="cursor-pointer">
@@ -881,6 +920,7 @@ export default function PrinciplesPage() {
             style={{
               backgroundColor: "rgba(0, 0, 0, 0.04)",
               border: "1px solid rgba(0, 0, 0, 0.08)",
+              width: isStacked ? "100%" : "fit-content",
             }}
           >
             {/* Sliding indicator */}
@@ -899,18 +939,23 @@ export default function PrinciplesPage() {
               }}
             />
             <button
-              onClick={() => handleViewChange("line")}
-              className="px-3 py-1 rounded text-xs font-medium text-black/45 relative z-10"
+              onClick={() => {
+                if (view !== "line") handleViewChange("line");
+              }}
+              disabled={view === "line"}
+              className="px-3 py-1 rounded text-xs font-medium relative z-10 w-1/2 sm:w-auto flex items-center justify-center sm:inline-flex sm:justify-start"
               style={{
                 transform:
                   pressedTab === "explore" ? "scale(0.95)" : "scale(1)",
                 transition: "transform 0.05s ease-out",
+                color: "rgba(0, 0, 0, 0.45)",
+                cursor: view === "line" ? "default" : "pointer",
               }}
             >
-              Explore{" "}
+              Explore
               <span
+                className={isMobile ? "hidden" : "inline-flex"}
                 style={{
-                  display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   width: "16px",
@@ -921,26 +966,34 @@ export default function PrinciplesPage() {
                   fontSize: "9px",
                   fontWeight: 600,
                   opacity: 0.5,
-                  marginLeft: "3px",
-                  marginTop: "-2px",
+                  marginLeft: "6px",
                   verticalAlign: "middle",
                 }}
               >
+                {" "}
                 E
               </span>
             </button>
             <button
-              onClick={() => handleViewChange("grid")}
-              className="px-3 py-1 rounded text-xs font-medium text-black/45 relative z-10"
+              onClick={() => {
+                if (view !== "grid") handleViewChange("grid");
+              }}
+              disabled={view === "grid"}
+              className="px-3 py-1 rounded text-xs font-medium relative z-10 flex items-center justify-center"
               style={{
                 transform: pressedTab === "grid" ? "scale(0.95)" : "scale(1)",
                 transition: "transform 0.05s ease-out",
+                color: "rgba(0, 0, 0, 0.45)",
+                cursor: view === "grid" ? "default" : "pointer",
+                width: isStacked ? "50%" : "auto",
+                display: isStacked ? "flex" : "inline-flex",
+                justifyContent: isStacked ? "center" : "flex-start",
               }}
             >
-              View All{" "}
+              View All
               <span
+                className={isMobile ? "hidden" : "inline-flex"}
                 style={{
-                  display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   width: "16px",
@@ -951,11 +1004,11 @@ export default function PrinciplesPage() {
                   fontSize: "9px",
                   fontWeight: 600,
                   opacity: 0.5,
-                  marginLeft: "3px",
-                  marginTop: "-2px",
+                  marginLeft: "6px",
                   verticalAlign: "middle",
                 }}
               >
+                {" "}
                 A
               </span>
             </button>
@@ -974,10 +1027,10 @@ export default function PrinciplesPage() {
 
         {/* Info Section - Always visible */}
         <div
-          className="mb-16"
+          className={isStacked ? "mb-4" : "mb-16"}
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
+            gridTemplateColumns: isStacked ? "1fr" : "repeat(2, 1fr)",
             gap: "16px",
             justifyItems: "start",
             position: "relative",
@@ -989,7 +1042,9 @@ export default function PrinciplesPage() {
             isolation: "isolate",
           }}
         >
-          <div style={{ maxWidth: "528px" }}>
+          <div
+            style={{ maxWidth: isStacked ? "100%" : "528px", width: "100%" }}
+          >
             <h2 className="font-semibold mb-1 text-sm text-gray-900">
               What&apos;s this?
             </h2>
@@ -999,7 +1054,9 @@ export default function PrinciplesPage() {
               considerations we should have when making software.
             </p>
           </div>
-          <div style={{ maxWidth: "528px" }}>
+          <div
+            style={{ maxWidth: isStacked ? "100%" : "528px", width: "100%" }}
+          >
             <h2 className="font-semibold mb-1 text-sm text-gray-900">
               How to use it?
             </h2>
@@ -1016,9 +1073,24 @@ export default function PrinciplesPage() {
           <motion.div
             ref={lineContainerRef}
             style={{
-              width: targetView === "line" ? "calc(100% + 48px)" : "100%",
-              marginLeft: targetView === "line" ? "-24px" : "0",
-              marginRight: targetView === "line" ? "-24px" : "0",
+              width:
+                targetView === "line"
+                  ? isStacked
+                    ? "100vw"
+                    : "calc(100% + 48px)"
+                  : "100%",
+              marginLeft:
+                targetView === "line"
+                  ? isStacked
+                    ? "calc(-50vw + 50%)"
+                    : "-24px"
+                  : "0",
+              marginRight:
+                targetView === "line"
+                  ? isStacked
+                    ? "calc(-50vw + 50%)"
+                    : "-24px"
+                  : "0",
               paddingLeft: "0",
               paddingRight: "0",
               paddingBottom: "0",
@@ -1033,9 +1105,13 @@ export default function PrinciplesPage() {
               justifyContent: targetView === "grid" ? "start" : "flex-start",
               paddingTop: "0",
               overflowX: targetView === "line" ? "hidden" : "visible",
-              overflowY: "hidden",
+              overflowY: "visible",
               position: "relative",
-              minHeight: targetView === "line" ? "calc(100vh - 500px)" : "auto",
+              minHeight:
+                targetView === "line"
+                  ? `${740 * (isStacked ? mobileScale : 1) * 1.08}px`
+                  : "auto",
+              height: "auto",
               opacity: 1,
               transform:
                 view === "line" && targetView === "line"
@@ -1059,8 +1135,8 @@ export default function PrinciplesPage() {
                   : "none",
             }}
           >
-            {/* Fade masks for line view */}
-            {targetView === "line" && (
+            {/* Fade masks for line view - hidden on mobile */}
+            {targetView === "line" && !isStacked && (
               <>
                 <div
                   style={{
@@ -1099,19 +1175,31 @@ export default function PrinciplesPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: "16px",
-                  position: "relative",
-                  left: "calc(50vw - 264px)",
-                  transform: `translateX(calc(-${
-                    // Calculate transform position accounting for duplicates at start (+3 offset)
-                    (activeCardIndex + 3) * 544
-                  }px + ${dragOffset}px))`,
-                  transition: isDragging ? "none" : "transform 0.15s ease-out",
+                  position: "absolute",
+                  left: "50vw",
+                  marginLeft: isStacked ? "0" : "-48px", // Compensate for container offsets
+                  transform: `translateX(calc(${
+                    // Center the active card at viewport center
+                    // Card width is always 528px, gap is 16px
+                    // On mobile, we need to account for the scale in the translation
+                    // Active card center = (index + 3) * (cardWidth + gap) + margin + halfScaledWidth
+                    isStacked
+                      ? `-${
+                          ((activeCardIndex + 3) * 544 + 21 + 272) * mobileScale
+                        }px`
+                      : `-${(activeCardIndex + 3) * 544 + 21 + 285}px`
+                  } + ${dragOffset}px)) ${
+                    isStacked ? `scale(${mobileScale})` : ""
+                  }`,
+                  transformOrigin: "left center",
+                  transition:
+                    isDragging || isWrapping
+                      ? "none"
+                      : "transform 0.15s ease-out",
                   cursor: isDragging ? "grabbing" : "grab",
                   userSelect: "none",
                   WebkitUserSelect: "none",
                   touchAction: "pan-x",
-                  marginLeft: 0,
-                  marginRight: 0,
                   paddingLeft: 0,
                   paddingRight: 0,
                 }}
@@ -1132,7 +1220,7 @@ export default function PrinciplesPage() {
                       : isPrev || isNext
                       ? 0.5
                       : 0.25;
-                    const scale = isActive ? 1.08 : 1;
+                    const scale = isActive ? (isStacked ? 1.03 : 1.08) : 1;
                     const marginLeft = isActive ? "21px" : "0px";
                     const marginRight = isActive ? "21px" : "0px";
 
@@ -1145,6 +1233,7 @@ export default function PrinciplesPage() {
                           maxWidth: "528px",
                           marginLeft,
                           marginRight,
+                          transformOrigin: "center center",
                         }}
                         animate={{
                           opacity,
@@ -1185,11 +1274,11 @@ export default function PrinciplesPage() {
                       ? index === 0
                       : index === realActiveIndex + 1;
                   const opacity = isActive ? 1 : isPrev || isNext ? 0.5 : 0.25;
-                  const scale = isActive ? 1.08 : 1;
+                  const scale = isActive ? (isStacked ? 1.03 : 1.08) : 1;
 
                   return (
                     <motion.div
-                      key={index}
+                      key={`${index}-${isActive}`}
                       data-card
                       animate={{
                         opacity,
@@ -1254,7 +1343,7 @@ export default function PrinciplesPage() {
                       : isPrev || isNext
                       ? 0.5
                       : 0.25;
-                    const scale = isActive ? 1.08 : 1;
+                    const scale = isActive ? (isStacked ? 1.03 : 1.08) : 1;
                     const marginLeft = isActive ? "21px" : "0px";
                     const marginRight = isActive ? "21px" : "0px";
 
@@ -1267,6 +1356,7 @@ export default function PrinciplesPage() {
                           maxWidth: "528px",
                           marginLeft,
                           marginRight,
+                          transformOrigin: "center center",
                         }}
                         animate={{
                           opacity,
@@ -1339,11 +1429,26 @@ export default function PrinciplesPage() {
             <button
               onClick={() => {
                 const currentIndex = activeCardIndexRef.current;
-                const newIndex =
-                  currentIndex === 0 ? allCards.length - 1 : currentIndex - 1;
-                setSlideDirection("right");
-                activeCardIndexRef.current = newIndex;
-                setActiveCardIndex(newIndex);
+                const isWrappingBack = currentIndex === 0;
+
+                if (isWrappingBack) {
+                  // Seamless wrap: animate to duplicate at -1, then snap to real last card
+                  setSlideDirection("right");
+                  activeCardIndexRef.current = -1;
+                  setActiveCardIndex(-1);
+                  setTimeout(() => {
+                    setIsWrapping(true);
+                    activeCardIndexRef.current = allCards.length - 1;
+                    setActiveCardIndex(allCards.length - 1);
+                    requestAnimationFrame(() => {
+                      setIsWrapping(false);
+                    });
+                  }, 150);
+                } else {
+                  setSlideDirection("right");
+                  activeCardIndexRef.current = currentIndex - 1;
+                  setActiveCardIndex(currentIndex - 1);
+                }
                 setTimeout(() => setSlideDirection(null), 300);
               }}
               style={{
@@ -1391,10 +1496,10 @@ export default function PrinciplesPage() {
                   "background-color 0.05s ease-out, transform 0.05s ease-out",
               }}
             >
-              Random{" "}
+              Random
               <span
+                className={isMobile ? "hidden" : "inline-flex"}
                 style={{
-                  display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   width: "16px",
@@ -1405,22 +1510,37 @@ export default function PrinciplesPage() {
                   fontSize: "9px",
                   fontWeight: 600,
                   color: "rgba(255, 255, 255, 0.7)",
-                  marginLeft: "3px",
-                  marginTop: "-2px",
+                  marginLeft: "6px",
                   verticalAlign: "middle",
                 }}
               >
+                {" "}
                 R
               </span>
             </button>
             <button
               onClick={() => {
                 const currentIndex = activeCardIndexRef.current;
-                const newIndex =
-                  currentIndex === allCards.length - 1 ? 0 : currentIndex + 1;
-                setSlideDirection("left");
-                activeCardIndexRef.current = newIndex;
-                setActiveCardIndex(newIndex);
+                const isWrappingForward = currentIndex === allCards.length - 1;
+
+                if (isWrappingForward) {
+                  // Seamless wrap: animate to duplicate at allCards.length, then snap to real first card
+                  setSlideDirection("left");
+                  activeCardIndexRef.current = allCards.length;
+                  setActiveCardIndex(allCards.length);
+                  setTimeout(() => {
+                    setIsWrapping(true);
+                    activeCardIndexRef.current = 0;
+                    setActiveCardIndex(0);
+                    requestAnimationFrame(() => {
+                      setIsWrapping(false);
+                    });
+                  }, 150);
+                } else {
+                  setSlideDirection("left");
+                  activeCardIndexRef.current = currentIndex + 1;
+                  setActiveCardIndex(currentIndex + 1);
+                }
                 setTimeout(() => setSlideDirection(null), 300);
               }}
               style={{
