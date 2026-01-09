@@ -1059,7 +1059,7 @@ export default function PrinciplesPage() {
         <div className="max-w-4xl mx-auto">
           {/* Divider */}
           <div
-            className="mb-8"
+            className="mb-16"
             style={{
               width: "100%",
               height: "1px",
@@ -1069,12 +1069,12 @@ export default function PrinciplesPage() {
 
           {/* Info Section - Always visible */}
           <div
-            className="mb-16"
+            className="mb-8"
             style={{
-              display: "grid",
-              gridTemplateColumns: isStacked ? "1fr" : "repeat(2, 1fr)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
               gap: "16px",
-              justifyItems: "start",
               position: "relative",
               zIndex: 30,
               transform: "none",
@@ -1084,28 +1084,28 @@ export default function PrinciplesPage() {
               isolation: "isolate",
             }}
           >
-            <div
-              style={{ maxWidth: isStacked ? "100%" : "528px", width: "100%" }}
-            >
-              <h2 className="font-semibold mb-1 text-sm text-gray-900">
-                What&apos;s this?
-              </h2>
+            <div style={{ maxWidth: "528px", width: "100%" }}>
               <p className="text-sm text-gray-900 leading-normal">
-                This is a compilation of the aspects we evaluate when shipping a
-                solution. think about them as the cliff notes of the
-                considerations we should have when making software.
+                In our search for the product&apos;s core values, we landed on a
+                simple belief: <br /> Railway solutions should be{" "}
+                <strong>Clear</strong>, <strong>Precise</strong>,{" "}
+                <strong>Efficient</strong>, <strong>Durable</strong>, and{" "}
+                <strong>Delightful</strong>.
               </p>
             </div>
-            <div
-              style={{ maxWidth: isStacked ? "100%" : "528px", width: "100%" }}
-            >
-              <h2 className="font-semibold mb-1 text-sm text-gray-900">
-                How to use it?
-              </h2>
+            <div style={{ maxWidth: "528px", width: "100%" }}>
               <p className="text-sm text-gray-900 leading-normal">
-                Whenever your solution is functional, evaluate how it
-                progressively fits the prompts. Ideally, it should move upwards
-                across iterations, not from the first launch.
+                These qualities are reached progressively across
+                iterations—starting functional and rough, and becoming polished
+                and delightful over time. Each card includes a set of questions
+                designed to surface gaps in how thoroughly a solution has been
+                considered.
+              </p>
+            </div>
+            <div style={{ maxWidth: "528px", width: "100%" }}>
+              <p className="text-sm text-gray-900 leading-normal">
+                Once your solution is functional, go through these prompts to
+                identify which aspects can be improved.
               </p>
             </div>
           </div>

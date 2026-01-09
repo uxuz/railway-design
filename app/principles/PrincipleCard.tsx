@@ -74,7 +74,8 @@ export default function PrincipleCard({
             className="rounded-md"
             style={{
               color: themeColor,
-              fontFamily: "JetBrains Mono",
+              fontFamily:
+                '"JetBrains Mono", "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Liberation Mono", "Courier New", monospace',
               fontWeight: 600,
               backgroundColor: "#F6F4F2",
             }}
@@ -85,7 +86,8 @@ export default function PrincipleCard({
             className="rounded-md"
             style={{
               color: themeColor,
-              fontFamily: "JetBrains Mono",
+              fontFamily:
+                '"JetBrains Mono", "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Liberation Mono", "Courier New", monospace',
               fontWeight: 600,
               backgroundColor: "#F6F4F2",
             }}
@@ -151,6 +153,3 @@ export default function PrincipleCard({
     </div>
   );
 }
-
-
-
