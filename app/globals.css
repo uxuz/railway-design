@@ -231,30 +231,175 @@ a {
   }
 }
 
-/* Article with indented content except H2 headings */
-.article-indented > *:not(h2) {
-  padding-left: 48px;
+/* ========================================
+   Long-form Article Styles
+   Scoped under .long-form
+   Content: 640px centered, Lines: elastic decoration
+   ======================================== */
+
+.long-form .article-grid {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
 }
 
-.article-indented strong {
+/* Title: full width of container */
+.long-form .article-title {
+  font-family: 'IBM Plex Serif', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(32px, 5vw, 64px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: #1a1a1a;
+  margin-bottom: 96px;
+}
+
+/* Content: 640px max, always centered */
+.long-form .article-content {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* Paragraphs: IBM Plex Serif, Regular, fluid 16-18px, ~1.78 line-height */
+.long-form .article-content p {
+  font-family: 'IBM Plex Serif', serif;
+  font-weight: 400;
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.78;
+  letter-spacing: -0.01em;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+/* H2s: Inter Semibold, fluid 20-24px, ~1.17 line-height */
+.long-form .article-content h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: clamp(20px, 2vw, 24px);
+  line-height: 1.17;
+  letter-spacing: -0.025em;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+/* H2s with line: elastic decoration filling left margin */
+/* Line extends from container edge to content edge */
+/* At 1120px container: (1120 - 640) / 2 - 32px gap = 208px */
+.long-form .article-content h2.with-line::before {
+  content: '';
+  position: absolute;
+  right: calc(100% + 32px); /* 32px gap from H2 */
+  top: 50%;
+  transform: translateY(-50%);
+  /* Width = half of (container - content) - gap */
+  /* Outer padding: 24px, white card padding: 48px = 144px total */
+  width: calc((min(100vw - 144px, 1120px) - 640px) / 2 - 32px);
+  height: 2px;
+  background-color: #000;
+}
+
+/* H3s: IBM Plex Serif, Bold, fluid 16-18px, ~1.78 line-height */
+.long-form .article-content h3 {
+  font-family: 'IBM Plex Serif', serif;
+  font-weight: 700;
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.78;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+/* Lists */
+.long-form .article-content ul {
+  font-family: 'IBM Plex Serif', serif;
+  font-weight: 400;
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.78;
+  letter-spacing: -0.01em;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  padding-left: 1.5em;
+  list-style-type: disc;
+}
+
+.long-form .article-content ul li {
+  margin-bottom: 8px;
+}
+
+.long-form .article-content ul.spaced li {
+  margin-bottom: 16px;
+}
+
+.long-form .article-content ul.italic,
+.long-form .article-content p.italic {
+  font-style: italic;
+}
+
+/* Strong text */
+.long-form .article-content strong {
   font-weight: 600;
 }
 
-@media (max-width: 640px) {
-  .article-indented > *:not(h2) {
-    padding-left: 24px;
+/* Muted text */
+.long-form .article-content .text-muted {
+  color: #666;
+}
+
+/* Small text */
+.long-form .article-content .text-sm {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+/* Section end: extra bottom margin before next H2 */
+.long-form .article-content .section-end {
+  margin-bottom: 48px;
+}
+
+/* Footnote with top border */
+.long-form .article-content .footnote {
+  margin-top: 32px;
+  margin-bottom: 48px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.long-form .article-content .footnote p {
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 0;
+}
+
+/* Links */
+.long-form .article-content a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.long-form .article-content a:hover {
+  color: #1a1a1a;
+}
+
+/* Hide lines when not enough space (content + minimal margin) */
+@media (max-width: 800px) {
+  .long-form .article-content h2.with-line::before {
+    display: none;
   }
 }
 
-/* Tighter bullet spacing for lists */
-.article-indented ul li {
-  list-style: none;
-  position: relative;
-  padding-left: 1em;
-}
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .long-form.white-card {
+    padding: 24px !important;
+  }
 
-.article-indented ul li::before {
-  content: "•";
-  position: absolute;
-  left: 0;
+  .long-form .article-title {
+    margin-bottom: 32px;
+  }
+
+  .long-form .article-content {
+    max-width: 100%;
+  }
 }
