@@ -18,19 +18,20 @@ export default function OnConsiderationPage() {
       }}
     >
       <div
-        className="w-full h-full p-12"
+        className="long-form white-card"
         style={{
           backgroundColor: "#E7E5E3",
           borderRadius: "8px",
           boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.12)",
-          width: "100%",
           minHeight: "calc(100vh - 48px)",
+          padding: "48px",
+          paddingTop: "24px",
         }}
       >
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center gap-2 mb-8">
-            <Link href="/" className="cursor-pointer">
+        {/* Header - max-width 1120px */}
+        <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
+          <div className="flex items-center gap-3">
+            <Link href="/">
               <svg
                 width="28"
                 height="28"
@@ -44,148 +45,142 @@ export default function OnConsiderationPage() {
                 />
               </svg>
             </Link>
-            <span className="text-gray-400">/</span>
-            <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
-              On Consideration
-            </h1>
+            <Link href="/" className="text-xl font-semibold text-gray-900 tracking-tight hover:opacity-70">
+              Design
+            </Link>
           </div>
 
           {/* Divider */}
           <div
-            className="mb-12"
             style={{
               width: "100%",
               height: "1px",
               backgroundColor: "rgba(0, 0, 0, 0.12)",
+              marginTop: "24px",
+              marginBottom: "96px",
             }}
           />
+        </div>
 
-          {/* Article Content */}
-          <article className="prose-article article-indented">
+        {/* Article grid container */}
+        <div className="article-grid">
+          {/* Title - spans all columns */}
+          <h1 className="article-title">On Consideration</h1>
+
+          {/* Article Content - columns 4-10 */}
+          <article className="article-content">
             {/* Opening */}
-            <p className="text-gray-900 mb-4 leading-relaxed">
-              Creation is what separates us from everything else. Not using tools but making things
+            <p>
+              Creation is what makes us human. Not using things but making things
               that express how we understand the world. Things that didn't have to exist but do
               because we believed they should.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               And we're losing it. We're so deep into shipping, scaling, surviving that we forgot why
               we create in the first place. We're making things that work but say nothing. Artifacts
               with no human in them. Just optimization and generic assumptions.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               This is about remembering what creation actually is: the impulse to understand
               something deeply enough that you can give it form. To make something that carries
               your belief about how it should be.
             </p>
-            <p className="text-gray-900 mb-12 leading-relaxed">
+            <p className="section-end">
               When you create for others, that understanding becomes something else:
               consideration for how they'll experience what you've made.
             </p>
 
             {/* Good design is consideration made visible */}
-            <h2 className="text-xl font-semibold text-gray-900 mb-4" style={{ letterSpacing: "-0.0125em" }}>
-              Good design is consideration made visible
-            </h2>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <h2 className="with-line">Good design is consideration made visible</h2>
+            <p>
               When you create something for others to use, you're making choices on their behalf.
               Every detail they don't have to think about is a choice you made thoughtfully. Every
               confusion they encounter is a choice you didn't make at all.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               This isn't about aesthetics or polish. It's about understanding the complete problem—
               technical constraints, business realities, and human limitations. Most designers stop at
               "user needs." Most engineers stop at "technical requirements." Complete work requires
               seeing all of it simultaneously.
             </p>
 
-            {/* What consideration looks like */}
-            <h3 className="text-lg font-semibold text-gray-900 mb-3" style={{ letterSpacing: "-0.0125em" }}>
-              What consideration looks like
-            </h3>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <h3>What consideration looks like</h3>
+            <p>
               Consideration means anticipating questions before they're asked. It means removing
               decisions that don't need to be made. It means making the right path obvious without
               explaining it.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               The best infrastructure disappears completely. You notice it only when it fails. This is
               the goal—not to be impressive, but to be trusted and forgotten.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               This applies to everything we build: interfaces, APIs, documentation, error messages,
               deployment flows, pricing models. If someone has to work around your system, you
               haven't finished the work.
             </p>
 
-            {/* Inconsiderate artifacts = Bad Products */}
-            <h3 className="text-lg font-semibold text-gray-900 mb-3" style={{ letterSpacing: "-0.0125em" }}>
-              Inconsiderate artifacts = Bad Products
-            </h3>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <h3>Inconsiderate artifacts = Bad Products</h3>
+            <p>
               Things made with a wrong, over-generalized understanding of who we are, why we'd
               use this, or what the actual intention is. Every time you grab something and it's
               uncomfortable, somebody didn't consider how it would feel in your hand after a certain
               time, or they didn't account for your hand size. Maybe it's not for me—but what if it is?
             </p>
 
-            <h3 className="text-lg font-semibold text-gray-900 mb-3" style={{ letterSpacing: "-0.0125em" }}>
-              Why this matters
-            </h3>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <h3>Why this matters</h3>
+            <p>
               Consideration isn't optional kindness. It's minimum competence for anything you expect
               others to rely on.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               When you ship something unconsidered, you're making a statement: "I didn't think
               about this enough, so now you have to." You're transferring your incomplete work onto
               everyone who uses it. That compounds. One unconsidered decision becomes a
               thousand small frustrations across your users.
             </p>
-            <p className="text-gray-900 mb-12 leading-relaxed">
+            <p className="section-end">
               That's not shipping fast. That's shipping broken and calling it done.
             </p>
 
             {/* The efficiency illusion */}
-            <h2 className="text-xl font-semibold text-gray-900 mb-4" style={{ letterSpacing: "-0.0125em" }}>
-              The efficiency illusion
-            </h2>
-            <p className="text-gray-600 mb-2 leading-relaxed">
-              <strong className="text-gray-900">"It just needs to work"</strong>—For who? At what scale? When?
+            <h2 className="with-line">The efficiency illusion</h2>
+            <p className="italic">
+              <strong>"It just needs to work"</strong>—For who? At what scale? When?
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               These questions get generalized away for efficiency purposes. We cut time by not
               considering these factors. But that's not efficiency—that's transferring the
               consideration labor from the maker (who gets paid to think about it once) to every user
               (who has to figure it out individually, repeatedly, forever).
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               We've optimized the wrong variable. Faster implementation without deeper
               understanding just means we can be wrong at scale more quickly. AI can write code
               faster, but that's just faster implementation—we don't have a deeper or faster
               understanding of ourselves. Products get better the more accurate they are, the more
               they fit the hole, and this only comes from understanding, not from faster tools.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               "It just needs to work" is how we convince ourselves that inconsiderate products are
               pragmatic. But nothing exists in the abstract:
             </p>
-            <ul className="list-disc list-inside mb-4 space-y-1 text-gray-900">
+            <ul>
               <li><strong>For who?</strong> A developer at 2am debugging a production issue has different needs than one exploring options at lunch.</li>
               <li><strong>At what scale?</strong> What works for 10 requests breaks differently than 10 million.</li>
               <li><strong>When?</strong> The same feature used daily versus once a month needs different consideration.</li>
             </ul>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               Generalizing these away doesn't save time. It moves the burden from us (who design it
               once) to them (who adapt to it forever). That's not efficiency, <strong>but disrespect at scale</strong>.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               The cost is everywhere. We're drowning in tools that work but exhaust us. Everything
               requires constant adaptation instead of just fitting. We've normalized products that
               disrespect our time and attention. The friction compounds—death by a thousand
               inconsiderate interactions.
             </p>
-            <p className="text-gray-900 mb-12 leading-relaxed">
+            <p className="section-end">
               And on the creator side, we've lost the plot. Speed has replaced understanding as the
               goal. We're building faster but nothing's getting better. We've forgotten that creation is
               supposed to be an expression of understanding, not just output. <strong>We're making things
@@ -193,58 +188,54 @@ export default function OnConsiderationPage() {
             </p>
 
             {/* The death of the middle */}
-            <h2 className="text-xl font-semibold text-gray-900 mb-4" style={{ letterSpacing: "-0.0125em" }}>
-              The death of the middle
-            </h2>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <h2 className="with-line">The death of the middle</h2>
+            <p>
               We live in an age where products in the middle die. Between cheap commodities and
               specialized craft, there's nothing sustainable.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               The middle doesn't know what it is. It's not convenient enough to win on price and
               distribution. It's not opinionated enough to be worth seeking out.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               Everyone has the same basic functions. If that's all you offer, it's a race to the bottom
               on distribution and price. Function is commodified. Function alone is worthless.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               The only way to survive is becoming opinionated enough to be a <em>specialty item</em>—almost
               a luxury. Not expensive for the sake of it, but specific. Made for particular people with
               particular needs and values. Clear about who it's for and, crucially, who it's not for.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               This means never stopping the work of understanding the people you're making this for.
               The conversation doesn't end at launch. You keep listening. Your thesis keeps evolving.
               You stay opinionated but not rigid.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               The dead middle understood once—or never understood at all—and then optimized for
               scale. The specialists keep the conversation going. Their artifacts stay alive because
               there's still a human making decisions, still adapting, still expressing belief about how
               this should work.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               That's the choice: race to the bottom on features and price, or commit to continuous
               understanding of specific people. There is no sustainable middle anymore.
             </p>
-            <p className="text-gray-900 mb-12 leading-relaxed">
+            <p className="section-end">
               Consideration isn't a luxury—it's survival strategy. Without it, you're just competing with
               everyone else. With it, you're the only one who actually understands what these people
               need.
             </p>
 
             {/* What this means at Railway */}
-            <h2 className="text-xl font-semibold text-gray-900 mb-4" style={{ letterSpacing: "-0.0125em" }}>
-              What this means at Railway
-            </h2>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <h2 className="with-line">What this means at Railway</h2>
+            <p>
               At Railway, we've distilled consideration into five qualities: <strong>Clear</strong>, <strong>Precise</strong>, <strong>Efficient</strong>,
               <strong> Durable</strong>, and <strong>Delightful</strong>. These aren't aspirational values—they're the standard we hold
               ourselves to across every iteration.
             </p>
 
-            <ul className="list-disc list-inside mb-4 space-y-4 text-gray-900 leading-relaxed">
+            <ul className="spaced">
               <li>
                 <strong>Clear</strong> means people understand what's happening and why. No mystery. No
                 configuration archaeology. If someone has to guess what your system is doing, you
@@ -271,98 +262,88 @@ export default function OnConsiderationPage() {
               </li>
             </ul>
 
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               These qualities are reached progressively. Start functional and rough, then iterate
               toward polished and delightful. Once something works, that's when you ask: what
               could be better?
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               Consideration can't stay abstract. You need specific questions that force you to think
               about the person on the other end—to imagine their context, their state, their
               expectations. To keep the human in the artifact. We use prompts like:
             </p>
-            <ul className="list-disc list-inside mb-4 space-y-1 text-gray-600">
+            <ul className="italic">
               <li>"Is this where users would naturally look for it?"</li>
               <li>"Are we organizing by our convenience or theirs?"</li>
               <li>"Can users predict what will happen before they act?"</li>
               <li>"Would this make someone say 'I wish I'd built that'?"</li>
             </ul>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               Quality isn't about perfection. It's about respect. Respect for the person's time—their
               time is worth more than yours because there are more of them. Respect for their
               intelligence—they can tell when you've been thoughtful and when you haven't. Respect
               for the problem you're solving—real problems deserve complete solutions.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               At Railway, this means infrastructure that stays out of your way. No surprise bills from
               usage you didn't know was happening. No mysterious failures with unhelpful error
               messages. No configuration archaeology to understand what you set up six months
               ago. Just systems that work the way you'd expect them to if you'd built them yourself,
               with the knowledge we have.
             </p>
-            <div className="mb-12 mt-8">
-              <div 
-                style={{ 
-                  borderTop: "1px solid rgba(0, 0, 0, 0.12)",
-                  paddingTop: "16px",
-                }}
-              >
-                <p className="text-gray-600 leading-relaxed text-sm">
-                  You can explore the full deck at{" "}
-                  <Link href="/cards" className="underline hover:text-gray-900">
-                    railway.design/cards
-                  </Link>
-                </p>
-              </div>
+            
+            <div className="footnote">
+              <p className="text-muted text-sm">
+                You can explore the full deck at{" "}
+                <Link href="/cards" className="underline">
+                  railway.design/cards
+                </Link>
+              </p>
             </div>
 
             {/* Why this is hard */}
-            <h2 className="text-xl font-semibold text-gray-900 mb-4" style={{ letterSpacing: "-0.0125em" }}>
-              Why this is hard
-            </h2>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <h2 className="with-line">Why this is hard</h2>
+            <p>
               This work is difficult. It requires understanding things deeply enough to make them
               simple. It requires caring about details that most people won't notice consciously but
               feel unconsciously. It requires saying no to features that complicate more than they
               help, even when someone really wants them.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               It means doing the hard work of design—which is not decoration, but the complete
               thinking-through of how something should work. It means not stopping at "it works" but
               pushing to "it works well."
             </p>
-            <p className="text-gray-900 mb-12 leading-relaxed">
+            <p className="section-end">
               Consideration requires seeing the full picture: what the business needs, what the
               technology enables, and what the person using it actually cares about. Most work fails
               because it optimizes for only one of these.
             </p>
 
             {/* The standard */}
-            <h2 className="text-xl font-semibold text-gray-900 mb-4" style={{ letterSpacing: "-0.0125em" }}>
-              The standard
-            </h2>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <h2 className="with-line">The standard</h2>
+            <p>
               This is what we're doing at Railway. The "peaceful cloud" isn't marketing, it's
               consideration expressed as infrastructure. We're saying: "We see that you're tired of
               DevOps complexity. We see that you want to build, not configure. We made this for that
               specific exhaustion."
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               Every complexity we remove is us saying: "I see that you're overwhelmed. I considered
               that." Every technical decision made invisible is respect for the builder's attention.
               <strong> Every choice carries our belief about how infrastructure should work.</strong>
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               The medium changes. The tools evolve. The work remains: understand another human
               being well enough to make something that fits their actual need. To make something
               that expresses what you believe about how it should be. No amount of automation
               speeds that up.
             </p>
-            <p className="text-gray-900 mb-4 leading-relaxed">
+            <p>
               <strong>That's consideration. That's creation. That's remembering what makes us human
               while we're busy building.</strong>
             </p>
-            <p className="text-gray-600 mb-4 leading-relaxed">
+            <p className="italic" style={{ marginBottom: "96px" }}>
               That's the job.
             </p>
           </article>
