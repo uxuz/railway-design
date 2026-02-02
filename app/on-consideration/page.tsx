@@ -8,7 +8,7 @@ export default function OnConsiderationPage() {
     <div
       className="min-h-screen"
       style={{
-        backgroundColor: "#DDDBD9",
+        backgroundColor: "#F1F0EF",
         padding: "24px",
         backgroundImage: `
           linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
@@ -20,7 +20,7 @@ export default function OnConsiderationPage() {
       <div
         className="long-form white-card"
         style={{
-          backgroundColor: "#E7E5E3",
+          backgroundColor: "#F1F0EF",
           borderRadius: "8px",
           boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.12)",
           minHeight: "calc(100vh - 48px)",

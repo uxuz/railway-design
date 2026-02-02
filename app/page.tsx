@@ -21,7 +21,7 @@ const team = [
   {
     name: "Jitachi García",
     role: "Head of Design",
-    image: "/images/team/jitachi.jpg",
+    image: "/images/team/jitachi.png",
     flag: "🇲🇽",
     twitter: "https://x.com/jitachi",
     github: "https://github.com/jitachi",
@@ -29,15 +29,16 @@ const team = [
   {
     name: "Genny Dee",
     role: "Brand Director",
-    image: "/images/team/genny.jpg",
+    image: "/images/team/genny.png",
     flag: "🇺🇸",
     twitter: "https://x.com/gennydee",
     github: "https://github.com/gennydee",
+    hidden: true,
   },
   {
     name: "Angelo Saraceno",
     role: "Brand Designer",
-    image: "/images/team/angelo.jpg",
+    image: "/images/team/angelo.png",
     flag: "🇺🇸",
     twitter: "https://x.com/angelosaraceno",
     github: "https://github.com/angelosaraceno",
@@ -79,14 +80,17 @@ export default function Home() {
           borderRadius: "8px",
           boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.12)",
           minHeight: "calc(100vh - 48px)",
+          padding: "48px",
+          paddingTop: "24px",
+          paddingBottom: "144px",
         }}
       >
-        <div className="max-w-[1120px] mx-auto py-6" style={{ paddingLeft: "32px", paddingRight: "32px" }}>
+        <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
           {/* Header */}
-          <div className="flex items-center gap-2" style={{ marginBottom: "160px" }}>
+          <div className="flex items-center gap-3" style={{ marginBottom: "160px" }}>
             <svg
-              width="24"
-              height="24"
+              width="28"
+              height="28"
               viewBox="0 0 48 48"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +100,7 @@ export default function Home() {
                 fill="#1C1A28"
               />
             </svg>
-            <span className="text-base font-medium text-gray-900">Design</span>
+            <span className="text-xl font-semibold text-gray-900 tracking-tight">Design</span>
           </div>
 
           {/* Hero */}
@@ -130,11 +134,11 @@ export default function Home() {
                 fontSize: "44px",
                 lineHeight: "125%",
                 letterSpacing: "-0.04em",
-                color: "#9CA3AF",
+                color: "rgba(0, 0, 0, 0.4)",
                 maxWidth: "740px",
               }}
             >
-              Resources, guidelines, and thoughts from the people crafting Railway.
+              Our principles, systems, and how we're building the future of infrastructure.
             </p>
           </div>
 
@@ -177,7 +181,7 @@ export default function Home() {
           {/* Team Section */}
           <Section label="Team">
             <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "32px" }}>
-              {team.map((member, index) => (
+              {team.filter((member) => !member.hidden).map((member, index) => (
                 <div key={index} className="flex items-center gap-4">
                   {/* Photo */}
                   <div
@@ -273,20 +277,30 @@ export default function Home() {
           </Section>
 
           {/* Hiring Section */}
-          <Section label="Hiring" noBorder>
+          <Section label="Careers" noBorder>
             <div className="space-y-2">
               {jobs.map((job, index) => (
                 <Link
                   key={index}
                   href={job.href}
                   target="_blank"
-                  className="flex items-center justify-between p-4 rounded-xl transition-all hover:bg-white/80"
+                  className="flex items-center justify-between p-5 rounded-xl transition-all hover:bg-white/80"
                   style={{
                     backgroundColor: "rgba(255, 255, 255, 0.5)",
                     boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.06)",
                   }}
                 >
-                  <span className="text-base font-medium text-gray-900">{job.title}</span>
+                  <span
+                    style={{
+                      fontFamily: "'IBM Plex Serif', serif",
+                      fontWeight: 500,
+                      fontSize: "20px",
+                      letterSpacing: "-0.025em",
+                      color: "#111827",
+                    }}
+                  >
+                    {job.title}
+                  </span>
                   <span className="text-sm text-gray-400">{job.location}</span>
                 </Link>
               ))}
@@ -317,14 +331,8 @@ function Section({
         borderBottom: noBorder ? "none" : undefined,
       }}
     >
-      <div
-        className="grid"
-        style={{
-          gridTemplateColumns: "repeat(12, 1fr)",
-          gap: "32px",
-        }}
-      >
-        <div style={{ gridColumn: "span 4" }}>
+      <div className="flex flex-col gap-6 lg:grid lg:gap-8" style={{ gridTemplateColumns: "repeat(12, 1fr)" }}>
+        <div className="lg:col-span-4">
           <h2
             style={{
               fontFamily: "'Inter Display', sans-serif",
@@ -336,7 +344,7 @@ function Section({
             {label}
           </h2>
         </div>
-        <div style={{ gridColumn: "span 8" }}>{children}</div>
+        <div className="lg:col-span-8">{children}</div>
       </div>
     </div>
   );
